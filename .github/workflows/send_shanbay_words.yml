@@ -7,8 +7,8 @@ on:
   push:
     branches:
       - master
-  paths:
-      - shanbay.js
+    paths:
+        - shanbay.js
 
 jobs:
   checker:

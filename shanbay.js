@@ -3,14 +3,15 @@ const https = require("https");
 const args = process.argv.slice(2);
 if (args.length < 3) {
   console.log("Please add telegram token,telegram chatId, and shanbay cookie")
-  return 
+  return
 }
 const token = args[0];
 const chatId = args[1];
-const cookie = args[2] 
+const cookie = args[2];
+const materialBookId = args[3] || 'blozps';
 
 const PATH_API = (page) =>
-  `/wordsapp/user_material_books/blozps/learning/words/today_learning_items?ipp=10&page=${page}&type_of=NEW`;
+  `/wordsapp/user_material_books/${materialBookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=NEW`;
 
 const options = {
   hostname: "apiv3.shanbay.com",

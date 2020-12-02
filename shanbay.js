@@ -1,8 +1,8 @@
 const https = require("https");
 
-const args = process.argv.slice(2);
-if (args.length < 3) {
-  console.log("Please add telegram token,telegram chatId, and shanbay cookie")
+const args = process.argv.slice(3);
+if (args.length < 4) {
+  console.log("Please add telegram token,telegram chatId, shanbay cookie and material_book id")
   return
 }
 const token = args[0];

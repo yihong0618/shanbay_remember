@@ -1,17 +1,16 @@
 const https = require("https");
 
-const args = process.argv.slice(3);
-if (args.length < 4) {
-  console.log("Please add telegram token,telegram chatId, shanbay cookie and material_book id")
+const args = process.argv.slice(2);
+if (args.length < 3) {
+  console.log("Please add telegram token,telegram chatId, and shanbay cookie")
   return
 }
 const token = args[0];
 const chatId = args[1];
-const cookie = args[2];
-const materialBookId = args[3] || 'blozps';
+const cookie = args[2]
 
-const PATH_API = (page) =>
-  `/wordsapp/user_material_books/${materialBookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=NEW`;
+const PATH_API = (page, materialbookId = 'blozps') =>
+  `/wordsapp/user_material_books/${materialbookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=NEW`;
 
 const options = {
   hostname: "apiv3.shanbay.com",
@@ -19,6 +18,7 @@ const options = {
   "Content-Type": "application/json",
   headers: { Cookie: cookie },
 };
+
 
 class Func {
   static loop(cnt, func) {
@@ -325,9 +325,32 @@ function send2telegram(text) {
   req.end();
 }
 
-function get_and_send_result(message = "", page = 1) {
+function get_material_book_id() {
+  const materialBookOpts = { ...options, path: '/wordsapp/user_material_books/current' };
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(materialBookOpts, (res) => {
+      let results = '';
+      res.on('data', (chunk) => {
+        results = results + chunk;
+      })
+      res.on("end", () => {
+        try {
+          const id = JSON.parse(results).materialbook_id;
+          resolve(id);
+        } catch (e) {
+          reject(e.message);
+        }
+      })
+    })
+    req.on('error', (e) => {reject(e.message)});
+    req.end();
+  })
+}
+
+function get_and_send_result(materialbookId, message = "", page = 1) {
   let results = "";
-  options.path = PATH_API(page);
+  options.path = PATH_API(page, materialbookId);
   let req = https.request(options, function (res) {
     res.on("data", function (chunk) {
       results = results + chunk;
@@ -353,7 +376,7 @@ function get_and_send_result(message = "", page = 1) {
       message += "\n";
       if (page < pageCount) {
         page += 1;
-        get_and_send_result(message, page);
+        get_and_send_result(materialbookId, message, page);
       } else {
         send2telegram(message);
       }
@@ -366,4 +389,9 @@ function get_and_send_result(message = "", page = 1) {
   req.end();
 }
 
-get_and_send_result();
+async function main() {
+  const materialbookId = await get_material_book_id().then();
+  get_and_send_result(materialbookId);
+}
+
+main()

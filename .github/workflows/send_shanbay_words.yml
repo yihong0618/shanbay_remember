@@ -1,0 +1,24 @@
+name: Send shanbay today new words to telegram
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+  push:
+    branches:
+      - master
+  paths:
+      - shanbay.js
+
+jobs:
+  checker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Run Script
+        run: |
+          node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"

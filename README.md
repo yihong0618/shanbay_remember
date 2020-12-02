@@ -1,9 +1,9 @@
 # shanbay_remember
 扇贝自动发送今日新词到 telegram
 
-## steps 
+## steps
 1. Get your telegram token and chatid (please google how to)
-2. Get your shanbay cookie from webbrower
+2. Get your shanbay cookie and your own material_book id from webbrower
 3. Change secrets to your own
 
 ![image](https://user-images.githubusercontent.com/15976103/100818317-d6436300-3484-11eb-945d-8c5fb72f4ce4.png)

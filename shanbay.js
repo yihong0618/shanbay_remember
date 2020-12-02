@@ -348,7 +348,7 @@ function get_material_book_id() {
   })
 }
 
-async function get_and_send_result(materialbookId, message = "", page = 1) {
+function get_and_send_result(materialbookId, message = "", page = 1) {
   let results = "";
   options.path = PATH_API(page, materialbookId);
   let req = https.request(options, function (res) {

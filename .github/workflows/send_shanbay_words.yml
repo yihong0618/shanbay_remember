@@ -21,4 +21,4 @@ jobs:
           node-version: '12.x'
       - name: Run Script
         run: |
-          node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"
+          node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}" "${{ secrets.MATERIAL_BOOK_ID }}"

@@ -325,7 +325,7 @@ function send2telegram(text) {
   req.end();
 }
 
-function get_material_book_id() {
+const materialBookIdApi = async () => {
   const materialBookOpts = { ...options, path: '/wordsapp/user_material_books/current' };
 
   return new Promise((resolve, reject) => {
@@ -343,7 +343,7 @@ function get_material_book_id() {
         }
       })
     })
-    req.on('error', (e) => {reject(e.message)});
+    req.on('error', reject);
     req.end();
   })
 }
@@ -390,7 +390,7 @@ function get_and_send_result(materialbookId, message = "", page = 1) {
 }
 
 async function main() {
-  const materialbookId = await get_material_book_id().then();
+  const materialbookId = await materialBookIdApi()
   get_and_send_result(materialbookId);
 }
 

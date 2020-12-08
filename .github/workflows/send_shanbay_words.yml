@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v1-beta
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
@@ -23,7 +24,6 @@ jobs:
         run: |
           node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"
       - name: use ffmpeg combine and send
-        uses: FedericoCarboni/setup-ffmpeg@v1-beta
         id: setup-ffmpeg
         run: | 
           ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_NEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_new_words.mp3

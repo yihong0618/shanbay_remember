@@ -403,7 +403,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
         page += 1;
         getAndSendResult(materialbookId, message, page, wordsType);
       } else {
-        // send2telegram(message);
+        send2telegram(message);
       }
     });
   });

@@ -1,4 +1,5 @@
 const https = require("https");
+const fs = require("fs");
 
 const args = process.argv.slice(2);
 if (args.length < 3) {
@@ -22,6 +23,12 @@ const options = {
 const wordsMessageMap = new Map([
   ["NEW", "新词"],
   ["REVIEW", "复习单词"],
+])
+
+
+const mp3DirMap = new Map([
+  ["NEW", "MP3_NEW"],
+  ["REVIEW", "MP3_REVIEW"],
 ])
 
 class Func {
@@ -317,7 +324,6 @@ function send2telegram(text) {
 
     res.on("data", () => {
       console.log("succeed");
-      // process.stdout.write(d);
     });
   });
 
@@ -352,7 +358,15 @@ const materialBookIdApi = async () => {
   })
 }
 
-function get_and_send_result(materialbookId, message = "", page = 1, wordsType="NEW") {
+function downloadAudio(audioUrl, audioName, wordsType) {
+  const dirName = mp3DirMap.get(wordsType)
+  const file = fs.createWriteStream(`${dirName}/${audioName}.mp3`);
+  const request = https.get(audioUrl, function(response) {
+    response.pipe(file);
+  });
+}
+
+async function getAndSendResult(materialbookId, message = "", page = 1, wordsType="NEW") {
   let results = "";
   options.path = PATH_API(page, materialbookId, wordsType);
   let req = https.request(options, function (res) {
@@ -370,8 +384,14 @@ function get_and_send_result(materialbookId, message = "", page = 1, wordsType="
       const pageCount = Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;
+      // console.log(JSON.stringify(wordsObject))
       wordsObject.forEach((w) => {
-        wordsArray.push(w.vocab_with_senses.word);
+        const wordsName = w.vocab_with_senses.word;
+        wordsArray.push(wordsName);
+        const audioUrl =  w.vocab_with_senses.sound.audio_us_urls[0]
+        if (audioUrl) {
+          downloadAudio(audioUrl, wordsName, wordsType)
+        }
       });
       if (page === 1) {
         const wordsMessageType = wordsMessageMap.get(wordsType)
@@ -381,9 +401,9 @@ function get_and_send_result(materialbookId, message = "", page = 1, wordsType="
       message += "\n";
       if (page < pageCount) {
         page += 1;
-        get_and_send_result(materialbookId, message, page, wordsType);
+        getAndSendResult(materialbookId, message, page, wordsType);
       } else {
-        send2telegram(message);
+        // send2telegram(message);
       }
     });
   });
@@ -396,8 +416,8 @@ function get_and_send_result(materialbookId, message = "", page = 1, wordsType="
 
 async function main() {
   const materialbookId = await materialBookIdApi()
-  get_and_send_result(materialbookId); // new words
-  get_and_send_result(materialbookId, message="", page=1, wordsType="REVIEW") // old words
+  await getAndSendResult(materialbookId); // new words
+  await getAndSendResult(materialbookId, message="", page=1, wordsType="REVIEW") // old words
 }
 
 main()

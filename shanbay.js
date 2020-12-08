@@ -9,8 +9,8 @@ const token = args[0];
 const chatId = args[1];
 const cookie = args[2]
 
-const PATH_API = (page, materialbookId = 'blozps') =>
-  `/wordsapp/user_material_books/${materialbookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=NEW`;
+const PATH_API = (page, materialbookId = 'blozps', wordsType='NEW') =>
+  `/wordsapp/user_material_books/${materialbookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=${wordsType}`;
 
 const options = {
   hostname: "apiv3.shanbay.com",
@@ -19,6 +19,10 @@ const options = {
   headers: { Cookie: cookie },
 };
 
+const wordsMessageMap = new Map([
+  ["NEW", "新词"],
+  ["REVIEW", "复习单词"],
+])
 
 class Func {
   static loop(cnt, func) {
@@ -348,9 +352,9 @@ const materialBookIdApi = async () => {
   })
 }
 
-function get_and_send_result(materialbookId, message = "", page = 1) {
+function get_and_send_result(materialbookId, message = "", page = 1, wordsType="NEW") {
   let results = "";
-  options.path = PATH_API(page, materialbookId);
+  options.path = PATH_API(page, materialbookId, wordsType);
   let req = https.request(options, function (res) {
     res.on("data", function (chunk) {
       results = results + chunk;
@@ -370,13 +374,14 @@ function get_and_send_result(materialbookId, message = "", page = 1) {
         wordsArray.push(w.vocab_with_senses.word);
       });
       if (page === 1) {
-        message += `今天的 ${totalNew} 个新词\n`;
+        const wordsMessageType = wordsMessageMap.get(wordsType)
+        message += `今天的 ${totalNew} 个${wordsMessageType}\n`;
       }
       message += wordsArray.join("\n");
       message += "\n";
       if (page < pageCount) {
         page += 1;
-        get_and_send_result(materialbookId, message, page);
+        get_and_send_result(materialbookId, message, page, wordsType);
       } else {
         send2telegram(message);
       }
@@ -391,7 +396,8 @@ function get_and_send_result(materialbookId, message = "", page = 1) {
 
 async function main() {
   const materialbookId = await materialBookIdApi()
-  get_and_send_result(materialbookId);
+  get_and_send_result(materialbookId); // new words
+  get_and_send_result(materialbookId, message="", page=1, wordsType="REVIEW") // old words
 }
 
 main()

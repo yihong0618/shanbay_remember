@@ -335,7 +335,7 @@ function send2telegram(text) {
   req.end();
 }
 
-const materialBookIdApi = async () => {
+async function getMaterialBookIdApi() {
   const materialBookOpts = { ...options, path: '/wordsapp/user_material_books/current' };
 
   return new Promise((resolve, reject) => {
@@ -384,8 +384,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       const pageCount = Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;
-      // console.log(JSON.stringify(wordsObject))
-      let i = 1;
+      let i = (page - 1) * 10 + 1;
       wordsObject.forEach((w) => {
         const wordsName = w.vocab_with_senses.word;
         wordsArray.push(wordsName);
@@ -417,7 +416,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
 }
 
 async function main() {
-  const materialbookId = await materialBookIdApi()
+  const materialbookId = await getMaterialBookIdApi()
   await getAndSendResult(materialbookId); // new words
   await getAndSendResult(materialbookId, message="", page=1, wordsType="REVIEW") // old words
 }

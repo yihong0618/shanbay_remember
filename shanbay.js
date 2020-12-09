@@ -361,7 +361,7 @@ const materialBookIdApi = async () => {
 function downloadAudio(audioUrl, audioName, wordsType) {
   const dirName = mp3DirMap.get(wordsType)
   const file = fs.createWriteStream(`${dirName}/${audioName}.mp3`);
-  const request = https.get(audioUrl, function(response) {
+  https.get(audioUrl, function(response) {
     response.pipe(file);
   });
 }
@@ -385,13 +385,15 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       let wordsArray = [];
       const wordsObject = resultJson.objects;
       // console.log(JSON.stringify(wordsObject))
+      let i = 1;
       wordsObject.forEach((w) => {
         const wordsName = w.vocab_with_senses.word;
         wordsArray.push(wordsName);
         const audioUrl =  w.vocab_with_senses.sound.audio_us_urls[0]
-        // if (audioUrl) {
-        //   downloadAudio(audioUrl, wordsName, wordsType)
-        // }
+        if (audioUrl) {
+          downloadAudio(audioUrl, i, wordsType)
+          i++
+        }
       });
       if (page === 1) {
         const wordsMessageType = wordsMessageMap.get(wordsType)

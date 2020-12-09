@@ -3,7 +3,7 @@ name: Send shanbay today new words to telegram
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/30 8-22 * * *"
   push:
     branches:
       - master
@@ -25,10 +25,16 @@ jobs:
       - name: Run Script
         run: |
           node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "MP3_NEW/1.mp3, MP3_REVIEW/1.mp3"
       - name: use ffmpeg combine and send
         id: setup-ffmpeg
         run: | 
-          (ls "$(pwd)"/MP3_NEW/*.mp3 >> /dev/null 2>&1) || ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_NEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_new_words.mp3
-          (ls "$(pwd)"/MP3_REVIEW/*.mp3 >> /dev/null 2>&1) || ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_REVIEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_review_words.mp3
-          (ls $(date +"%m%d")_new_words.mp3 >> /dev/null 2>&1) || curl -v "chat_id=${{ secrets.TELE_CHAT_ID }}" --form-string  document=@$(date +"%m%d")_new_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
-          (ls $(date +"%m%d")_review_words.mp3 >> /dev/null 2>&1) || curl -v "chat_id=${{ secrets.TELE_CHAT_ID }}" --form-string  document=@$(date +"%m%d")_review_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_NEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_new_words.mp3
+          ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_REVIEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_review_words.mp3
+          curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_new_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_review_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+        if: steps.check_files.outputs.files_exists == 'true'

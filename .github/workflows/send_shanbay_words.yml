@@ -30,5 +30,5 @@ jobs:
         run: | 
           (ls "$(pwd)"/MP3_NEW/*.mp3 >> /dev/null 2>&1) || ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_NEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_new_words.mp3
           (ls "$(pwd)"/MP3_REVIEW/*.mp3 >> /dev/null 2>&1) || ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_REVIEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_review_words.mp3
-          (ls $(date +"%m%d")_new_words.mp3 >> /dev/null 2>&1) || curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_new_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
-          (ls $(date +"%m%d")_review_words.mp3 >> /dev/null 2>&1) || curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_review_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          (ls $(date +"%m%d")_new_words.mp3 >> /dev/null 2>&1) || curl -v --form-string "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_new_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          (ls $(date +"%m%d")_review_words.mp3 >> /dev/null 2>&1) || curl -v --form-string "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_review_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument

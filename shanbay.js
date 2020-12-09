@@ -389,9 +389,9 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
         const wordsName = w.vocab_with_senses.word;
         wordsArray.push(wordsName);
         const audioUrl =  w.vocab_with_senses.sound.audio_us_urls[0]
-        if (audioUrl) {
-          downloadAudio(audioUrl, wordsName, wordsType)
-        }
+        // if (audioUrl) {
+        //   downloadAudio(audioUrl, wordsName, wordsType)
+        // }
       });
       if (page === 1) {
         const wordsMessageType = wordsMessageMap.get(wordsType)

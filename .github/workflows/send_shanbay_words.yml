@@ -17,11 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: FedericoCarboni/setup-ffmpeg@v1-beta
+      - name: install ffmpeg
+        run: sudo apt-get install ffmpeg
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '12.x' 
       - name: Run Script
         run: |
           node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"

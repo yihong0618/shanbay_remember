@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: agu
+        run: sudo apt-get update
       - name: install ffmpeg
         run: sudo apt-get update && apt-get install ffmpeg
       - name: Use Node.js 12.x

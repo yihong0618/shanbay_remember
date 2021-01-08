@@ -20,7 +20,7 @@ jobs:
       - name: agu
         run: sudo apt-get update
       - name: install ffmpeg
-        run: sudo apt-get update && apt-get install ffmpeg
+        run: sudo apt-get install ffmpeg
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:

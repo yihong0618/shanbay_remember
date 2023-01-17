@@ -19,12 +19,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: agu
         run: sudo apt-get update
-      - name: install ffmpeg
-        run: sudo apt-get install ffmpeg
+      - name: Setup ffmpeg for differnt platforms 
+        uses: FedericoCarboni/setup-ffmpeg@master
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x' 
+          node-version: '14.x' 
       - name: Run Script
         run: |
           node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"

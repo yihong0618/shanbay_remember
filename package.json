@@ -1,0 +1,22 @@
+{
+  "name": "shanbay",
+  "version": "1.0.0",
+  "description": "扇贝自动发送今日新词到 telegram",
+  "main": "shanbay.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yihong0618/shanbay_remember.git"
+  },
+  "author": "yihong0618",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yihong0618/shanbay_remember/issues"
+  },
+  "homepage": "https://github.com/yihong0618/shanbay_remember#readme",
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
+}

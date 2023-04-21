@@ -10,6 +10,7 @@ on:
     paths:
       - shanbay.js
 env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
   TZ: Asia/Shanghai
 
 jobs:
@@ -21,10 +22,20 @@ jobs:
         run: sudo apt-get update
       - name: Setup ffmpeg for differnt platforms 
         uses: FedericoCarboni/setup-ffmpeg@master
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: '14.x' 
+      - name: Install package
+         run: |
+          npm i
+      - name: Install edge-tts
+        run:  |
+          pip install -U edge-tts
       - name: Run Script
         run: |
           node shanbay.js ${{ secrets.TELE_TOKEN }} ${{ secrets.TELE_CHAT_ID }} "${{ secrets.SHANBAY_COOKIE }}"
@@ -40,4 +51,6 @@ jobs:
           ffmpeg -y -f concat -safe 0 -i <(find "$(pwd)"/MP3_REVIEW -iname "*.mp3" -printf "file "%p"\n" | sort) -c copy "$(pwd)"/$(date +"%m%d")_review_words.mp3
           curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_new_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
           curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@$(date +"%m%d")_review_words.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@new_article.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
+          curl -v -F "chat_id=${{ secrets.TELE_CHAT_ID }}" -F document=@review_article.mp3 https://api.telegram.org/bot${{ secrets.TELE_TOKEN }}/sendDocument
         if: steps.check_files.outputs.files_exists == 'true'

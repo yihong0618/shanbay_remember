@@ -6,7 +6,7 @@ on:
     - cron: "*/60 */4 * * *"
   push:
     branches:
-      - master
+      - main
     paths:
       - shanbay.js
 env:

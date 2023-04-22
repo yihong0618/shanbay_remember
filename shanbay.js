@@ -22,7 +22,12 @@ async function chapGPT(words) {
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     // copy from https://github.com/piglei/ai-vocabulary-builder
-    messages: [{ role: "user", content: `Please write a short story which is less than 300 words, the story should use simple words and these special words must be included: ${words}. Also surround every special word with a single '*' character at the beginning and the end.` }],
+    messages: [
+      {
+        role: "user",
+        content: `Please write a short story which is less than 300 words, the story should use simple words and these special words must be included: ${words}. Also surround every special word with a single '*' character at the beginning and the end.` 
+      }
+    ],
     });
     console.log(response["data"]["choices"][0]["message"]["content"]);
     return response["data"]["choices"][0]["message"]["content"]

@@ -3,7 +3,7 @@ const fs = require("fs");
 const { spawn } = require('child_process');
 
 const args = process.argv.slice(2);
-console.log('args --- ', args)
+
 if (args.length < 3) {
   console.log("Please add telegram token,telegram chatId, and shanbay cookie")
   return

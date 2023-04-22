@@ -28,7 +28,7 @@ async function chapGPT(words) {
 };
 
 const PATH_API = (page, materialbookId = 'blozps', wordsType='NEW') =>
-  `/wordsapp/user_material_books/${materialbookId}/learning/words/today_learning_items?ipp=10&page=${page}&type_of=${wordsType}`;
+  `/wordscollection/learning/words/today_learning_items?ipp=10&page=1&type_of=NEW`;
 
 const options = {
   hostname: "apiv3.shanbay.com",

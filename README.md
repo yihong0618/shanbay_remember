@@ -8,3 +8,11 @@
 
 ![image](https://user-images.githubusercontent.com/15976103/100818317-d6436300-3484-11eb-945d-8c5fb72f4ce4.png)
 ![image](https://user-images.githubusercontent.com/15976103/100818363-f07d4100-3484-11eb-9d4c-23d4182ad4af.png)
+
+# Contribution
+
+- Any issues or PRs are welcome.
+
+## 赞赏
+
+谢谢就够了

@@ -433,26 +433,29 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       message += wordsArray.join("\n");
       const cMessage = wordsArray.join(",");
       message += "\n";
+
+      await send2telegram(message);
+      const chatGPTMessage = await chapGPT(cMessage)
+      // console.log('chatGPTMessage ==> ', chatGPTMessage)
+      await send2telegram(chatGPTMessage);
+      const articleName = mp3ArticleMap.get(wordsType)
+      const child = spawn('edge-tts', ['--text', `"${chatGPTMessage}"`, '--write-media', `${articleName}_article.mp3`]);
+      child.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`);
+      });
+      child.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+      });
+      child.on('close', (code) => {
+          console.log(`child process exited with code ${code}`);
+      });
+      // 这么操作，只会发送最后一页的内容
       if (page < pageCount) {
         page += 1;
         getAndSendResult(materialbookId, message, page, wordsType);
-      } else {
-        await send2telegram(message);
-        const chatGPTMessage = await chapGPT(cMessage)
-        // console.log('chatGPTMessage ==> ', chatGPTMessage)
-        await send2telegram(chatGPTMessage);
-        const articleName = mp3ArticleMap.get(wordsType)
-        const child = spawn('edge-tts', ['--text', `"${chatGPTMessage}"`, '--write-media', `${articleName}_article.mp3`]);
-        child.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
-        child.stderr.on('data', (data) => {
-          console.error(`stderr: ${data}`);
-        });
-        child.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-        });
       }
+      // else {
+      // }
     });
   }
 );

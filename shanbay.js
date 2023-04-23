@@ -460,13 +460,14 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
           i++
         }
       });
-      if (page === 1) {
-        const wordsMessageType = wordsMessageMap.get(wordsType)
-        message += `Today's ${resultJson.total} ${wordsMessageType}\n`;
-      }
-      message += wordsArray.join("\n");
+      // if (page === 1) {
+      const wordsMessageType = wordsMessageMap.get(wordsType)
+      let msg = ''
+      msg += `Today's ${page}/${pageCount} ${wordsMessageType}\n`;
+      // }
+      msg += wordsArray.join("\n");
       const cMessage = wordsArray.join(",");
-      message += "\n";
+      msg += "\n";
 
       await send2telegram(message);
       const chatGPTMessage = await chapGPT(cMessage) // TODO: 这里需要降低频率

@@ -397,9 +397,18 @@ function downloadAudio(audioUrl, audioName, wordsType) {
 }
 
 // materialbookId: mnvdu
+
+/**
+ * 存在的问题：
+ * 频繁请求被openai拒绝
+ * 音频不存在
+ * 只有最后10个单词生成的文章能发送到telegram
+ * 
+*/
 async function getAndSendResult(materialbookId, message = "", page = 1, wordsType="NEW") {
   let results = "";
   options.path = PATH_API(page, materialbookId, wordsType);
+  // 获取wordsType，第page页单词
   let req = https.request(options, function (res) {
     res.on("data", function (chunk) {
       results = results + chunk;
@@ -413,7 +422,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       const resultJson = decode(toDecodeData);
       const totalNew = resultJson.total
       console.log('resultJson ==> ', resultJson)
-      const pageCount = Math.ceil(resultJson.total / 10);
+      const pageCount = 1// Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;
       let i = (page - 1) * 10 + 1;

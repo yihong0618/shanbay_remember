@@ -19,6 +19,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 async function chapGPT(words) {
+  console.log('words = ', words)
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     // copy from https://github.com/piglei/ai-vocabulary-builder

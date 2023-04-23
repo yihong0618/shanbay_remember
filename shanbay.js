@@ -402,6 +402,39 @@ function downloadAudio(audioUrl, audioName, wordsType) {
 
 // materialbookId: mnvdu
 
+async function requestShanBayPaging (materialbookId, message = "", page = 1, wordsType="NEW") {
+  let results = "";
+  options.path = PATH_API(page, materialbookId, wordsType);
+  return new Promise((resolve, reject) => {
+    let req = https.request(options, function (res) {
+      res.on("data", function (chunk) {
+        results = results + chunk;
+      });
+      res.on("end", async function () {
+        // 只是每一页的单词
+        const toDecodeData = JSON.parse(results).data
+        // if you are not remember new word, send nothing
+        if (!toDecodeData) {
+          resolve({ total: 0 })
+          return
+        }
+        const resultJson = decode(toDecodeData);
+        const totalNew = resultJson.total
+        if (totalNew === 0) { // 没有单词不要发送
+          resolve({total: 0})
+          return
+        }
+        resolve(resultJson)
+      })
+    });
+    req.on("error", function (e) {
+      console.log("getAndSendResult error", e);
+      reject(e)
+    });
+    req.end();
+  })
+}
+
 /**
  * 存在的问题：
  * 频繁请求被openai拒绝
@@ -410,27 +443,11 @@ function downloadAudio(audioUrl, audioName, wordsType) {
  * 
 */
 async function getAndSendResult(materialbookId, message = "", page = 1, wordsType="NEW") {
-  let results = "";
-  options.path = PATH_API(page, materialbookId, wordsType);
-  // 获取wordsType，第page页单词
-  let req = https.request(options, function (res) {
-    res.on("data", function (chunk) {
-      results = results + chunk;
-    });
-    res.on("end", async function () {
-      // 只是每一页的单词
-      const toDecodeData = JSON.parse(results).data
-      // if you are not remember new word, send nothing
-      if (!toDecodeData) {
-        return
-      }
-      const resultJson = decode(toDecodeData);
-      const totalNew = resultJson.total
-      if (totalNew === 0) { // 没有单词不要发送
-        return
-      }
-      console.log('resultJson ==> ', resultJson)
-      const pageCount = 1// Math.ceil(resultJson.total / 10);
+  
+  try {
+    const resp = await requestShanBayPaging(materialbookId, message, page, wordsType)
+    if (resp.total > 0) {
+      const pageCount = Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;
       let i = (page - 1) * 10 + 1;
@@ -466,20 +483,15 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       child.on('close', (code) => {
           console.log(`child process exited with code ${code}`);
       });
-      // 这么操作，只会发送最后一页的内容
       if (page < pageCount) {
         page += 1;
         getAndSendResult(materialbookId, message, page, wordsType);
       }
-      // else {
-      // }
-    });
+      // return message
+    }
+  } catch (e) {
+
   }
-);
-  req.on("error", function (e) {
-    console.log("getAndSendResult error", e);
-  });
-  req.end();
 }
 
 async function main() {

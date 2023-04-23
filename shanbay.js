@@ -469,7 +469,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       const cMessage = wordsArray.join(",");
       msg += "\n";
 
-      await send2telegram(message);
+      await send2telegram(msg);
       const chatGPTMessage = await chapGPT(cMessage) // TODO: 这里需要降低频率
       // console.log('chatGPTMessage ==> ', chatGPTMessage)
       await send2telegram(chatGPTMessage);

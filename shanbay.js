@@ -17,9 +17,11 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
+let count = 0
 async function chapGPT(words) {
-  console.log('words = ', words)
+  console.log(`counts => ${count}`, 'words = ', words)
+  count++
+  // TODO: 此代码调用这个接口太频繁, 会报错
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     // copy from https://github.com/piglei/ai-vocabulary-builder
@@ -452,7 +454,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
   }
 );
   req.on("error", function (e) {
-    console.log("error");
+    console.log("getAndSendResult error", e);
   });
   req.end();
 }

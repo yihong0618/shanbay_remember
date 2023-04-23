@@ -356,7 +356,7 @@ async function send2telegram(text) {
   });
 
   req.on("error", (error) => {
-    console.error(error);
+    console.error('send2telegram ERROR', error);
   });
 
   req.write(data);

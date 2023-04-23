@@ -396,6 +396,7 @@ function downloadAudio(audioUrl, audioName, wordsType) {
   });
 }
 
+// materialbookId: mnvdu
 async function getAndSendResult(materialbookId, message = "", page = 1, wordsType="NEW") {
   let results = "";
   options.path = PATH_API(page, materialbookId, wordsType);
@@ -411,6 +412,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       }
       const resultJson = decode(toDecodeData);
       const totalNew = resultJson.total
+      console.log('resultJson ==> ', resultJson)
       const pageCount = Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;

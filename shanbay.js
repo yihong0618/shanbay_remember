@@ -490,7 +490,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       // return message
     }
   } catch (e) {
-
+    console.log('getAndSendResult error', e)
   }
 }
 

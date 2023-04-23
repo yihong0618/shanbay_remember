@@ -445,8 +445,8 @@ async function requestShanBayPaging (materialbookId, message = "", page = 1, wor
 async function getAndSendResult(materialbookId, message = "", page = 1, wordsType="NEW") {
   
   try {
-    const resp = await requestShanBayPaging(materialbookId, message, page, wordsType)
-    if (resp.total > 0) {
+    const resultJson = await requestShanBayPaging(materialbookId, message, page, wordsType)
+    if (resultJson.total > 0) {
       const pageCount = Math.ceil(resultJson.total / 10);
       let wordsArray = [];
       const wordsObject = resultJson.objects;

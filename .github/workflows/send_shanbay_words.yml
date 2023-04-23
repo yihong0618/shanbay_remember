@@ -17,7 +17,7 @@ jobs:
   sender:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: agu
         run: sudo apt-get update
       - name: Setup ffmpeg for differnt platforms 
@@ -26,10 +26,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.8
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          node-version: '14.x' 
+          node-version: '16.x' 
       - name: Install package
         run: |
           npm i

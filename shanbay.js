@@ -32,7 +32,7 @@ async function chapGPT(words) {
       }
     ],
     });
-    console.log('--chatGPT --', response["data"]["choices"][0]["message"]["content"]);
+    // console.log('--chatGPT --', response["data"]["choices"][0]["message"]["content"]);
     return response["data"]["choices"][0]["message"]["content"]
 };
 
@@ -438,8 +438,9 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
         getAndSendResult(materialbookId, message, page, wordsType);
       } else {
         await send2telegram(message);
-        const chatGPTMessage = await chapGPT(cMessage) 
-        // await send2telegram(await chapGPT(chatGPTMessage));
+        const chatGPTMessage = await chapGPT(cMessage)
+        // console.log('chatGPTMessage ==> ', chatGPTMessage)
+        await send2telegram(chatGPTMessage);
         const articleName = mp3ArticleMap.get(wordsType)
         const child = spawn('edge-tts', ['--text', `"${chatGPTMessage}"`, '--write-media', `${articleName}_article.mp3`]);
         child.stdout.on('data', (data) => {

@@ -355,6 +355,10 @@ async function send2telegram(text) {
     res.on("data", () => {
       console.log("succeed");
     });
+
+    res.on("end", () => {
+      console.log("send2telegram end");
+    })
   });
 
   req.on("error", (error) => {

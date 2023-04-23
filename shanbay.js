@@ -462,7 +462,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       });
       if (page === 1) {
         const wordsMessageType = wordsMessageMap.get(wordsType)
-        message += `Today's ${totalNew} ${wordsMessageType}\n`;
+        message += `Today's ${resultJson.total} ${wordsMessageType}\n`;
       }
       message += wordsArray.join("\n");
       const cMessage = wordsArray.join(",");

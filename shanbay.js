@@ -418,6 +418,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       results = results + chunk;
     });
     res.on("end", async function () {
+      // 只是每一页的单词
       const toDecodeData = JSON.parse(results).data
       // if you are not remember new word, send nothing
       if (!toDecodeData) {
@@ -425,6 +426,9 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       }
       const resultJson = decode(toDecodeData);
       const totalNew = resultJson.total
+      if (totalNew === 0) { // 没有单词不要发送
+        return
+      }
       console.log('resultJson ==> ', resultJson)
       const pageCount = 1// Math.ceil(resultJson.total / 10);
       let wordsArray = [];
@@ -448,7 +452,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       message += "\n";
 
       await send2telegram(message);
-      const chatGPTMessage = await chapGPT(cMessage)
+      const chatGPTMessage = await chapGPT(cMessage) // TODO: 这里需要降低频率
       // console.log('chatGPTMessage ==> ', chatGPTMessage)
       await send2telegram(chatGPTMessage);
       const articleName = mp3ArticleMap.get(wordsType)

@@ -1,5 +1,6 @@
 {
   "name": "shanbay",
+  "type": "module",
   "version": "1.0.0",
   "description": "扇贝自动发送今日新词到 telegram",
   "main": "shanbay.js",

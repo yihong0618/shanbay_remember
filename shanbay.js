@@ -434,7 +434,8 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
       } else {
         await send2telegram(message);
         const chatGPTMessage = await chapGPT(cMessage) 
-        await send2telegram(await chapGPT(chatGPTMessage));
+        // await send2telegram(await chapGPT(chatGPTMessage));
+        await send2telegram(chatGPTMessage);
         const articleName = mp3ArticleMap.get(wordsType)
         const child = spawn('edge-tts', ['--text', `"${chatGPTMessage}"`, '--write-media', `${articleName}_article.mp3`]);
         child.stdout.on('data', (data) => {

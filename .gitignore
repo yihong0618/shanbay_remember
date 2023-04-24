@@ -128,6 +128,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-MP3_NEW/*.mp3
-MP3_REVIEW/*.mp3
-
+*.mp3
+*.audio

@@ -84,11 +84,15 @@ async function send2telegram(text) {
   req.end();
 }
 
-function downloadAudio(audioUrl, audioName, wordsType) {
+async function downloadAudio(audioUrl, audioName, wordsType) {
   const dirName = mp3DirMap.get(wordsType)
-  const file = fs.createWriteStream(`${dirName}/${audioName}.mp3`);
-  https.get(audioUrl, function (response) {
-    response.pipe(file);
+  const file = fs.createWriteStream(`${dirName}/${audioName}.audio`);
+  return new Promise((resolve, reject) => {
+    https.get(audioUrl, function (response) {
+      response.pipe(file);
+      response.on("end", () => { resolve() });
+      response.on("error", (err) => { reject(err) });
+    });
   });
 }
 
@@ -107,7 +111,7 @@ async function getAndSendResult(materialbookId, wordsType) {
     wordsArray.push(wordsName);
     const audioUrl = w.vocab_with_senses.sound.audio_us_urls[0]
     if (audioUrl)
-      downloadAudio(audioUrl, i, wordsType)
+      await downloadAudio(audioUrl, i, wordsType)
   }
 
   message += wordsArray.join("\n");

@@ -498,7 +498,7 @@ async function getAndSendResult(materialbookId, message = "", page = 1, wordsTyp
 async function main() {
   const materialbookId = await getMaterialBookIdApi()
   message = await getAndSendResult(materialbookId); // new words
-  await getAndSendResult(materialbookId, message="", page=1, wordsType="REVIEW") // old words
+  // await getAndSendResult(materialbookId, message="", page=1, wordsType="REVIEW") // old words
 }
 
 main()

@@ -22,6 +22,7 @@ const api = new API(cookie);
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
+  basePath: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1"
 });
 const openai = new OpenAIApi(configuration);
 
